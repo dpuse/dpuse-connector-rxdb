@@ -1,0 +1,17 @@
+{
+    "categoryId": "database",
+    "id": "datapos-connector-rxdb",
+    "implementations": {
+        "default": {
+            "authMethodId": "none",
+            "maxConnectionCount": 1
+        }
+    },
+    "label": { "en": "RxDB Database" },
+    "statusId": "alpha",
+    "typeId": "connector",
+    "usageId": "bidirectional",
+    "vendorAccountURL": null,
+    "vendorDocumentationURL": null,
+    "vendorHomeURL": null
+}

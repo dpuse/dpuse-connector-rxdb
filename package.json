@@ -1,0 +1,40 @@
+{
+    "name": "datapos-connector-rxdb",
+    "license": "ISC",
+    "private": true,
+    "type": "module",
+    "version": "0.1.2",
+    "peerDependencies": {
+        "@datapos/datapos-share-core": "^0.1.522"
+    },
+    "devDependencies": {
+        "@datapos/datapos-operations": "^0.1.482",
+        "@types/node": "^20.12.12",
+        "@typescript-eslint/eslint-plugin": "^7.9.0",
+        "@typescript-eslint/parser": "^7.9.0",
+        "eslint": "^8.57.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-prettier": "^5.1.3",
+        "prettier": "^3.2.5",
+        "typescript": "^5.4.5",
+        "vite": "^5.2.11",
+        "vite-plugin-dts": "^3.9.1"
+    },
+    "scripts": {
+        "audit": "npm audit",
+        "build": "npx vite build",
+        "bumpVersion": "node -e \"require('@datapos/datapos-operations/scriptHelpers').bumpVersion()\"",
+        "check": "npx npm-check-updates && npm outdated",
+        "document": "npx npm-license-crawler --onlyDirectDependencies --production --relativeLicensePath --json LICENSES.json",
+        "format": "prettier --write *.ts",
+        "lint": "npx eslint src/**/*.ts",
+        "publishToNPM": "echo \"***** PUBLISH TO NPM SCRIPT NOT IMPLEMENTED. *****\"",
+        "release": "npm run syncWithGitHub && npm run build && npm run uploadConnector",
+        "syncWithGitHub": "npm run bumpVersion && node -e \"require('@datapos/datapos-operations/scriptHelpers').syncWithGitHub()\"",
+        "test": "echo \"***** TEST SCRIPT NOT IMPLEMENTED. *****\"",
+        "updateDependencies": "npm run updateOperations && npm run updateShareCore",
+        "updateOperations": "npm install --save-dev @datapos/datapos-operations@latest",
+        "updateShareCore": "npm install @datapos/datapos-share-core@latest",
+        "uploadConnector": "node -e \"require('@datapos/datapos-operations/scriptHelpers').uploadConnector()\""
+    }
+}
