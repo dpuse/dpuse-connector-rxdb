@@ -1,6 +1,6 @@
 # DataPos - RxDB Connector
 
-A TypeScript library that implements the RxDB connector by DataPos.
+A TypeScript library that implements the RxDB connector.
 
 ## Installation
 
