@@ -3,12 +3,12 @@
     "license": "ISC",
     "private": true,
     "type": "module",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "peerDependencies": {
         "@datapos/datapos-share-core": "^0.1.592"
     },
     "devDependencies": {
-        "@datapos/datapos-operations": "^0.1.563",
+        "@datapos/datapos-operations": "^0.1.564",
         "@types/node": "^20.14.8",
         "@typescript-eslint/eslint-plugin": "^7.13.1",
         "@typescript-eslint/parser": "^7.13.1",
