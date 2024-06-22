@@ -3,21 +3,21 @@
     "license": "ISC",
     "private": true,
     "type": "module",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "peerDependencies": {
-        "@datapos/datapos-share-core": "^0.1.524"
+        "@datapos/datapos-share-core": "^0.1.592"
     },
     "devDependencies": {
-        "@datapos/datapos-operations": "^0.1.482",
-        "@types/node": "^20.12.12",
-        "@typescript-eslint/eslint-plugin": "^7.9.0",
-        "@typescript-eslint/parser": "^7.9.0",
+        "@datapos/datapos-operations": "^0.1.561",
+        "@types/node": "^20.14.8",
+        "@typescript-eslint/eslint-plugin": "^7.13.1",
+        "@typescript-eslint/parser": "^7.13.1",
         "eslint": "^8.57.0",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-prettier": "^5.1.3",
-        "prettier": "^3.2.5",
-        "typescript": "^5.4.5",
-        "vite": "^5.2.11",
+        "prettier": "^3.3.2",
+        "typescript": "^5.5.2",
+        "vite": "^5.3.1",
         "vite-plugin-dts": "^3.9.1"
     },
     "scripts": {
