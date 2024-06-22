@@ -1,21 +1,22 @@
 // Dependencies - Framework
-import { AbortError, ConnectorError, FetchError, ItemTypeId, PreviewTypeId } from '@datapos/datapos-share-core';
-import type { ConnectionConfig, Connector, ConnectorCallbackData, ConnectorConfig, ConnectorFieldInfo, ConnectorRecord, ItemConfig } from '@datapos/datapos-share-core';
-import type { DataViewConfig, Preview, PreviewInterface, ReadInterface, ReadInterfaceSettings } from '@datapos/datapos-share-core';
-import { extractExtensionFromPath, lookupMimeTypeForExtension } from '@datapos/datapos-share-core';
-import type { ListItemsResult, ListItemsSettings } from '@datapos/datapos-share-core';
+import { AbortError, ConnectorError, FetchError } from '@datapos/datapos-share-core';
+import type { ConnectionConfig, ConnectionItemConfig, Connector, ConnectorCallbackData, ConnectorConfig, DataViewPreviewConfig, ReadRecord } from '@datapos/datapos-share-core';
+import type { ListResult, ListSettings } from '@datapos/datapos-share-core';
+import type { PreviewInterface, PreviewResult, PreviewSettings } from '@datapos/datapos-share-core';
+import type { ReadInterface, ReadSettings } from '@datapos/datapos-share-core';
 
 // Dependencies - Data
 import config from './config.json';
 import { version } from '../package.json';
 
 // Constants
-const CALLBACK_READ_ABORTED = 'Read aborted.';
-const ERROR_LIST_ITEMS_FAILED = 'List items failed.';
-const ERROR_PREVIEW_FAILED = 'Preview failed.';
-const ERROR_READ_FAILED = 'Read failed.';
+const CALLBACK_PREVIEW_ABORTED = 'Connector preview aborted.';
+const CALLBACK_READ_ABORTED = 'Connector read aborted.';
+const ERROR_LIST_ITEMS_FAILED = 'Connector list items failed.';
+const ERROR_PREVIEW_FAILED = 'Connector preview failed.';
+const ERROR_READ_FAILED = 'Connector read failed.';
 
-// Classes - RxDB Connector
+// Classes - Application Emulator Connector
 export default class RxDBConnector implements Connector {
     abortController: AbortController | undefined;
     readonly config: ConnectorConfig;
@@ -42,11 +43,11 @@ export default class RxDBConnector implements Connector {
         return { connector: this, read };
     }
 
-    async listItems(settings: ListItemsSettings): Promise<ListItemsResult> {
+    async list(callback: (data: ConnectorCallbackData) => void, settings: ListSettings): Promise<ListResult> {
         return new Promise((resolve, reject) => {
             try {
-                const itemConfigs: ItemConfig[] = [];
-                resolve({ cursor: undefined, isMore: false, itemConfigs, totalCount: itemConfigs.length });
+                const connectionItemConfigs: ConnectionItemConfig[] = [];
+                resolve({ cursor: undefined, isMore: false, connectionItemConfigs, totalCount: connectionItemConfigs.length });
             } catch (error) {
                 reject(constructErrorAndTidyUp(this, ERROR_LIST_ITEMS_FAILED, 'listItems.1', error));
             }
@@ -55,10 +56,21 @@ export default class RxDBConnector implements Connector {
 }
 
 // Interfaces - Preview
-const preview = (connector: Connector, dataViewConfig: DataViewConfig, chunkSize?: number): Promise<{ error?: unknown; result?: Preview }> => {
+const preview = (
+    connector: Connector,
+    callback: (data: ConnectorCallbackData) => void,
+    connectionItemConfig: ConnectionItemConfig,
+    settings: PreviewSettings
+): Promise<{ error?: unknown; result?: PreviewResult }> => {
     return new Promise((resolve, reject) => {
         try {
-            // TODO
+            // Create an abort controller. Get the signal for the abort controller and add an abort listener.
+            connector.abortController = new AbortController();
+            const signal = connector.abortController.signal;
+            signal.addEventListener('abort', () => reject(constructErrorAndTidyUp(connector, ERROR_PREVIEW_FAILED, 'preview.6', new AbortError(CALLBACK_PREVIEW_ABORTED))));
+
+            // Fetch chunk from start of file.
+            resolve({ result: { data: [], typeId: 'table' } });
         } catch (error) {
             reject(constructErrorAndTidyUp(connector, ERROR_PREVIEW_FAILED, 'preview.1', error));
         }
@@ -66,19 +78,27 @@ const preview = (connector: Connector, dataViewConfig: DataViewConfig, chunkSize
 };
 
 // Interfaces - Read
-const read = (connector: Connector, dataViewConfig: DataViewConfig, settings: ReadInterfaceSettings, callback: (data: ConnectorCallbackData) => void): Promise<void> => {
+const read = (
+    connector: Connector,
+    callback: (data: ConnectorCallbackData) => void,
+    connectionItemConfig: ConnectionItemConfig,
+    previewConfig: DataViewPreviewConfig,
+    settings: ReadSettings
+): Promise<void> => {
     return new Promise((resolve, reject) => {
         try {
-            callback({ typeId: 'start', properties: { dataViewConfig, settings } });
+            callback({ typeId: 'start', properties: {} });
             // Create an abort controller and get the signal. Add an abort listener to the signal.
             connector.abortController = new AbortController();
             const signal = connector.abortController.signal;
             signal.addEventListener(
                 'abort',
-                () => reject(constructErrorAndTidyUp(connector, ERROR_READ_FAILED, 'read.8', new AbortError(CALLBACK_READ_ABORTED)))
+                () => reject(constructErrorAndTidyUp(connector, ERROR_READ_FAILED, 'read.10', new AbortError(CALLBACK_READ_ABORTED)))
                 /*, { once: true, signal } TODO: Don't need once and signal? */
             );
-            callback({ typeId: 'end', properties: {} });
+            settings.chunk([] as ReadRecord[]);
+
+            resolve();
         } catch (error) {
             reject(constructErrorAndTidyUp(connector, ERROR_READ_FAILED, 'read.1', error));
         }
@@ -86,7 +106,7 @@ const read = (connector: Connector, dataViewConfig: DataViewConfig, settings: Re
 };
 
 // Utilities - Construct Error and Tidy Up
-const constructErrorAndTidyUp = (connector: Connector, message: string, context: string, error: unknown): ConnectorError => {
+const constructErrorAndTidyUp = (connector: Connector, message: string, context: string, error: unknown): unknown => {
     connector.abortController = null;
-    return new ConnectorError(message, `${config.id}.${context}`, undefined, undefined, undefined, error);
+    return new ConnectorError(message, `${config.id}.${context}`, undefined, undefined, error);
 };
