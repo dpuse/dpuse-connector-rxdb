@@ -3,7 +3,7 @@
     "license": "ISC",
     "private": true,
     "type": "module",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "peerDependencies": {
         "@datapos/datapos-share-core": "^0.1.592"
     },
@@ -29,12 +29,12 @@
         "format": "prettier --write *.ts",
         "lint": "npx eslint src/**/*.ts",
         "publishToNPM": "echo \"***** PUBLISH TO NPM SCRIPT NOT IMPLEMENTED. *****\"",
-        "release": "npm run syncWithGitHub && npm run build && npm run uploadConnector",
+        "release": "npm run syncWithGitHub && npm run build && npm run uploadPlugin",
         "syncWithGitHub": "npm run bumpVersion && node -e \"require('@datapos/datapos-operations/scriptHelpers').syncWithGitHub()\"",
         "test": "echo \"***** TEST SCRIPT NOT IMPLEMENTED. *****\"",
         "updateDependencies": "npm run updateOperations && npm run updateShareCore",
         "updateOperations": "npm install --save-dev @datapos/datapos-operations@latest",
         "updateShareCore": "npm install @datapos/datapos-share-core@latest",
-        "uploadConnector": "node -e \"require('@datapos/datapos-operations/scriptHelpers').uploadConnector()\""
+        "uploadPlugin": "node -e \"require('@datapos/datapos-operations/scriptHelpers').uploadPlugin()\""
     }
 }
