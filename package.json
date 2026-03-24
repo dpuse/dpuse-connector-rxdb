@@ -3,7 +3,7 @@
     "license": "MIT",
     "private": false,
     "type": "module",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "prettier": "@dpuse/dpuse-development/prettierrc",
     "dependencies": {
         "@dpuse/dpuse-shared": "^0.3.595"
@@ -33,7 +33,8 @@
         "sonda": "^0.11.1",
         "typescript": "^5.5.2",
         "vite": "^8.0.2",
-        "vite-plugin-dts": "^4.5.4"
+        "vite-plugin-dts": "^4.5.4",
+        "vitest": "^4.1.1"
     },
     "scripts": {
         "audit": "op run --env-file=.env -- node -e \"import('@dpuse/dpuse-development').then(m => m.auditDependencies())\"",

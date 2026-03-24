@@ -1,4 +1,4 @@
-# DataPos - RxDB Connector
+# DPUse RxDB Connector
 
 A TypeScript library that implements the RxDB connector.
 
